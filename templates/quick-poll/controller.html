@@ -130,35 +130,37 @@
       });
       document.getElementById('voted-msg').style.display = 'block';
       // No external network calls — relay only
-      window.hoople.send({ type: 'poll-vote', option: option });
+      if (window.hoople) window.hoople.send({ type: 'poll-vote', option: option });
     }
 
     // Only activate after session is established — no relay calls on initial render
-    window.hoople.on('session-ready', function(data) {
-      document.getElementById('waiting-state').style.display = 'none';
-      document.getElementById('poll-state').style.display = 'block';
-      // Presenter can optionally supply question text and option labels
-      if (data && data.question) {
-        document.getElementById('question-text').textContent = data.question;
-      }
-      if (data && data.options) {
-        var keys = ['a', 'b', 'c', 'd'];
-        var optKeys = ['A', 'B', 'C', 'D'];
-        keys.forEach(function(k, i) {
-          if (data.options[optKeys[i]]) {
-            document.getElementById('label-' + k).textContent = data.options[optKeys[i]];
-          }
-        });
-      }
-    });
-
-    window.hoople.on('reset', function() {
-      voted = false;
-      document.querySelectorAll('.option-btn').forEach(function(btn) {
-        btn.disabled = false;
+    if (window.hoople) {
+      window.hoople.on('session-ready', function(data) {
+        document.getElementById('waiting-state').style.display = 'none';
+        document.getElementById('poll-state').style.display = 'block';
+        // Presenter can optionally supply question text and option labels
+        if (data && data.question) {
+          document.getElementById('question-text').textContent = data.question;
+        }
+        if (data && data.options) {
+          var keys = ['a', 'b', 'c', 'd'];
+          var optKeys = ['A', 'B', 'C', 'D'];
+          keys.forEach(function(k, i) {
+            if (data.options[optKeys[i]]) {
+              document.getElementById('label-' + k).textContent = data.options[optKeys[i]];
+            }
+          });
+        }
       });
-      document.getElementById('voted-msg').style.display = 'none';
-    });
+
+      window.hoople.on('reset', function() {
+        voted = false;
+        document.querySelectorAll('.option-btn').forEach(function(btn) {
+          btn.disabled = false;
+        });
+        document.getElementById('voted-msg').style.display = 'none';
+      });
+    }
   </script>
 </body>
 </html>

@@ -125,28 +125,30 @@
       document.getElementById('btn-b').disabled = true;
       document.getElementById('voted-msg').style.display = 'block';
       // No external network calls — send via hoople relay only
-      window.hoople.send({ type: 'vote', side: side });
+      if (window.hoople) window.hoople.send({ type: 'vote', side: side });
     }
 
     // Only activate UI after the session is established — no relay calls on initial render
-    window.hoople.on('session-ready', function(data) {
-      document.getElementById('waiting-state').style.display = 'none';
-      document.getElementById('vote-state').style.display = 'block';
-      // Update side labels if presenter provided them
-      if (data && data.sideA) {
-        document.getElementById('btn-a').querySelector('span:last-child').textContent = data.sideA;
-      }
-      if (data && data.sideB) {
-        document.getElementById('btn-b').querySelector('span:last-child').textContent = data.sideB;
-      }
-    });
+    if (window.hoople) {
+      window.hoople.on('session-ready', function(data) {
+        document.getElementById('waiting-state').style.display = 'none';
+        document.getElementById('vote-state').style.display = 'block';
+        // Update side labels if presenter provided them
+        if (data && data.sideA) {
+          document.getElementById('btn-a').querySelector('span:last-child').textContent = data.sideA;
+        }
+        if (data && data.sideB) {
+          document.getElementById('btn-b').querySelector('span:last-child').textContent = data.sideB;
+        }
+      });
 
-    window.hoople.on('reset', function() {
-      voted = false;
-      document.getElementById('btn-a').disabled = false;
-      document.getElementById('btn-b').disabled = false;
-      document.getElementById('voted-msg').style.display = 'none';
-    });
+      window.hoople.on('reset', function() {
+        voted = false;
+        document.getElementById('btn-a').disabled = false;
+        document.getElementById('btn-b').disabled = false;
+        document.getElementById('voted-msg').style.display = 'none';
+      });
+    }
   </script>
 </body>
 </html>

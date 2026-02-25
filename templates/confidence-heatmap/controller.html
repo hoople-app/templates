@@ -143,22 +143,24 @@
       });
       document.getElementById('submitted-msg').style.display = 'block';
       // No external network calls — relay only
-      window.hoople.send({ type: 'rating', value: value });
+      if (window.hoople) window.hoople.send({ type: 'rating', value: value });
     }
 
     // Only activate after session is established — no relay calls on initial render
-    window.hoople.on('session-ready', function() {
-      document.getElementById('waiting-state').style.display = 'none';
-      document.getElementById('rating-state').style.display = 'block';
-    });
-
-    window.hoople.on('reset', function() {
-      submitted = false;
-      document.querySelectorAll('.rating-btn').forEach(function(btn) {
-        btn.disabled = false;
+    if (window.hoople) {
+      window.hoople.on('session-ready', function() {
+        document.getElementById('waiting-state').style.display = 'none';
+        document.getElementById('rating-state').style.display = 'block';
       });
-      document.getElementById('submitted-msg').style.display = 'none';
-    });
+
+      window.hoople.on('reset', function() {
+        submitted = false;
+        document.querySelectorAll('.rating-btn').forEach(function(btn) {
+          btn.disabled = false;
+        });
+        document.getElementById('submitted-msg').style.display = 'none';
+      });
+    }
   </script>
 </body>
 </html>
