@@ -16,8 +16,9 @@ const templates = dirs.map(d => {
   return {
     ...manifest,
     id: d.name,
-    previewUrl: `https://templates.hoople.app/templates/${d.name}/preview.png`,
-    controllerUrl: `https://templates.hoople.app/templates/${d.name}/controller.html`,
+    // TODO: update base URL to https://templates.hoople.app when domain is registered
+    previewUrl: `https://hoople-templates.pages.dev/templates/${d.name}/preview.png`,
+    controllerUrl: `https://hoople-templates.pages.dev/templates/${d.name}/controller.html`,
   }
 })
 
