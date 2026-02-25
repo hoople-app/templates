@@ -1,0 +1,9 @@
+{
+  "name": "Confidence Heatmap",
+  "author": "Hoople Team",
+  "description": "Students rate their confidence on a 1–5 scale. Results build a live heatmap on the slide.",
+  "subject": ["any"],
+  "gradeLevel": "K-12",
+  "interactionType": "rating",
+  "usageCount": 0
+}

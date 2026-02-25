@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Quick Poll</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    #question-text {
+      font-size: 0.875rem;
+      color: #888;
+      margin-bottom: 32px;
+      text-align: center;
+      min-height: 1.25rem;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .option-btn {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      min-height: 64px;
+      padding: 14px 20px;
+      border: 2px solid #2a2a2a;
+      border-radius: 14px;
+      background: #141414;
+      color: #f0f0f0;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      text-align: left;
+    }
+    .option-btn:active {
+      transform: scale(0.97);
+    }
+    .option-btn[data-option="A"] { border-color: #3b82f6; }
+    .option-btn[data-option="A"]:hover, .option-btn[data-option="A"]:active { background: #1d3461; border-color: #60a5fa; }
+    .option-btn[data-option="B"] { border-color: #22c55e; }
+    .option-btn[data-option="B"]:hover, .option-btn[data-option="B"]:active { background: #052015; border-color: #4ade80; }
+    .option-btn[data-option="C"] { border-color: #f59e0b; }
+    .option-btn[data-option="C"]:hover, .option-btn[data-option="C"]:active { background: #2d1600; border-color: #fbbf24; }
+    .option-btn[data-option="D"] { border-color: #a855f7; }
+    .option-btn[data-option="D"]:hover, .option-btn[data-option="D"]:active { background: #1a0730; border-color: #c084fc; }
+    .option-key {
+      font-size: 1.25rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      width: 28px;
+    }
+    .option-label {
+      flex: 1;
+    }
+    .waiting {
+      color: #555;
+      font-size: 1rem;
+      text-align: center;
+    }
+    #voted-msg {
+      display: none;
+      margin-top: 24px;
+      font-size: 0.9rem;
+      color: #22c55e;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Quick Poll</h1>
+  <p id="question-text">Choose one option</p>
+
+  <div id="waiting-state">
+    <p class="waiting">Waiting for session...</p>
+  </div>
+
+  <div id="poll-state" style="display:none; width:100%; max-width:360px;">
+    <div class="options">
+      <button class="option-btn" data-option="A" onclick="castVote('A')">
+        <span class="option-key">A</span>
+        <span class="option-label" id="label-a">Option A</span>
+      </button>
+      <button class="option-btn" data-option="B" onclick="castVote('B')">
+        <span class="option-key">B</span>
+        <span class="option-label" id="label-b">Option B</span>
+      </button>
+      <button class="option-btn" data-option="C" onclick="castVote('C')">
+        <span class="option-key">C</span>
+        <span class="option-label" id="label-c">Option C</span>
+      </button>
+      <button class="option-btn" data-option="D" onclick="castVote('D')">
+        <span class="option-key">D</span>
+        <span class="option-label" id="label-d">Option D</span>
+      </button>
+    </div>
+    <p id="voted-msg">Vote submitted!</p>
+  </div>
+
+  <script>
+    var voted = false;
+
+    function castVote(option) {
+      if (voted) return;
+      voted = true;
+      document.querySelectorAll('.option-btn').forEach(function(btn) {
+        btn.disabled = true;
+      });
+      document.getElementById('voted-msg').style.display = 'block';
+      // No external network calls — relay only
+      window.hoople.send({ type: 'poll-vote', option: option });
+    }
+
+    // Only activate after session is established — no relay calls on initial render
+    window.hoople.on('session-ready', function(data) {
+      document.getElementById('waiting-state').style.display = 'none';
+      document.getElementById('poll-state').style.display = 'block';
+      // Presenter can optionally supply question text and option labels
+      if (data && data.question) {
+        document.getElementById('question-text').textContent = data.question;
+      }
+      if (data && data.options) {
+        var keys = ['a', 'b', 'c', 'd'];
+        var optKeys = ['A', 'B', 'C', 'D'];
+        keys.forEach(function(k, i) {
+          if (data.options[optKeys[i]]) {
+            document.getElementById('label-' + k).textContent = data.options[optKeys[i]];
+          }
+        });
+      }
+    });
+
+    window.hoople.on('reset', function() {
+      voted = false;
+      document.querySelectorAll('.option-btn').forEach(function(btn) {
+        btn.disabled = false;
+      });
+      document.getElementById('voted-msg').style.display = 'none';
+    });
+  </script>
+</body>
+</html>

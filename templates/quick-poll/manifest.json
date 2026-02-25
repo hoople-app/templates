@@ -1,0 +1,9 @@
+{
+  "name": "Quick Poll",
+  "author": "Hoople Team",
+  "description": "Audience votes on up to four options. Results show as a live bar chart on the slide.",
+  "subject": ["any"],
+  "gradeLevel": "K-12",
+  "interactionType": "poll",
+  "usageCount": 0
+}

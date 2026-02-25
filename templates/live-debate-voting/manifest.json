@@ -1,0 +1,9 @@
+{
+  "name": "Live Debate Voting",
+  "author": "Hoople Team",
+  "description": "Students vote for debate arguments in real time. Vote counts animate live on the slide.",
+  "subject": ["history", "english", "debate"],
+  "gradeLevel": "9-12",
+  "interactionType": "voting",
+  "usageCount": 0
+}

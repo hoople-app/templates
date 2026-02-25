@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Debate Voting</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      color: #f0f0f0;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+    .subtitle {
+      font-size: 0.875rem;
+      color: #888;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      width: 100%;
+      max-width: 360px;
+    }
+    .vote-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 96px;
+      padding: 20px;
+      border: 2px solid #2a2a2a;
+      border-radius: 16px;
+      background: #141414;
+      color: #f0f0f0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    .vote-btn:active {
+      transform: scale(0.97);
+    }
+    .vote-btn.side-a {
+      border-color: #3b82f6;
+    }
+    .vote-btn.side-a:hover, .vote-btn.side-a:active {
+      background: #1d3461;
+      border-color: #60a5fa;
+    }
+    .vote-btn.side-b {
+      border-color: #f59e0b;
+    }
+    .vote-btn.side-b:hover, .vote-btn.side-b:active {
+      background: #3d2a0a;
+      border-color: #fbbf24;
+    }
+    .vote-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #888;
+      margin-bottom: 4px;
+    }
+    .waiting {
+      color: #555;
+      font-size: 1rem;
+      text-align: center;
+    }
+    #voted-msg {
+      display: none;
+      margin-top: 24px;
+      font-size: 0.9rem;
+      color: #22c55e;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Debate Voting</h1>
+  <p class="subtitle">Vote for the stronger argument</p>
+
+  <div id="waiting-state">
+    <p class="waiting">Waiting for session...</p>
+  </div>
+
+  <div id="vote-state" style="display:none; width:100%; max-width:360px;">
+    <div class="cards">
+      <button class="vote-btn side-a" id="btn-a" onclick="castVote('A')">
+        <span class="vote-label">Argument</span>
+        <span>Side A</span>
+      </button>
+      <button class="vote-btn side-b" id="btn-b" onclick="castVote('B')">
+        <span class="vote-label">Argument</span>
+        <span>Side B</span>
+      </button>
+    </div>
+    <p id="voted-msg">Vote submitted!</p>
+  </div>
+
+  <script>
+    var voted = false;
+
+    function castVote(side) {
+      if (voted) return;
+      voted = true;
+      document.getElementById('btn-a').disabled = true;
+      document.getElementById('btn-b').disabled = true;
+      document.getElementById('voted-msg').style.display = 'block';
+      // No external network calls — send via hoople relay only
+      window.hoople.send({ type: 'vote', side: side });
+    }
+
+    // Only activate UI after the session is established — no relay calls on initial render
+    window.hoople.on('session-ready', function(data) {
+      document.getElementById('waiting-state').style.display = 'none';
+      document.getElementById('vote-state').style.display = 'block';
+      // Update side labels if presenter provided them
+      if (data && data.sideA) {
+        document.getElementById('btn-a').querySelector('span:last-child').textContent = data.sideA;
+      }
+      if (data && data.sideB) {
+        document.getElementById('btn-b').querySelector('span:last-child').textContent = data.sideB;
+      }
+    });
+
+    window.hoople.on('reset', function() {
+      voted = false;
+      document.getElementById('btn-a').disabled = false;
+      document.getElementById('btn-b').disabled = false;
+      document.getElementById('voted-msg').style.display = 'none';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{
+  "generated": "2026-02-25T20:56:12.949Z",
+  "templates": [
+    {
+      "name": "Confidence Heatmap",
+      "author": "Hoople Team",
+      "description": "Students rate their confidence on a 1–5 scale. Results build a live heatmap on the slide.",
+      "subject": [
+        "any"
+      ],
+      "gradeLevel": "K-12",
+      "interactionType": "rating",
+      "usageCount": 0,
+      "id": "confidence-heatmap",
+      "previewUrl": "https://templates.hoople.app/templates/confidence-heatmap/preview.png",
+      "controllerUrl": "https://templates.hoople.app/templates/confidence-heatmap/controller.html"
+    },
+    {
+      "name": "Live Debate Voting",
+      "author": "Hoople Team",
+      "description": "Students vote for debate arguments in real time. Vote counts animate live on the slide.",
+      "subject": [
+        "history",
+        "english",
+        "debate"
+      ],
+      "gradeLevel": "9-12",
+      "interactionType": "voting",
+      "usageCount": 0,
+      "id": "live-debate-voting",
+      "previewUrl": "https://templates.hoople.app/templates/live-debate-voting/preview.png",
+      "controllerUrl": "https://templates.hoople.app/templates/live-debate-voting/controller.html"
+    },
+    {
+      "name": "Quick Poll",
+      "author": "Hoople Team",
+      "description": "Audience votes on up to four options. Results show as a live bar chart on the slide.",
+      "subject": [
+        "any"
+      ],
+      "gradeLevel": "K-12",
+      "interactionType": "poll",
+      "usageCount": 0,
+      "id": "quick-poll",
+      "previewUrl": "https://templates.hoople.app/templates/quick-poll/preview.png",
+      "controllerUrl": "https://templates.hoople.app/templates/quick-poll/controller.html"
+    }
+  ]
+}
