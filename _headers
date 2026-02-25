@@ -7,5 +7,9 @@
   Cache-Control: public, max-age=300
   Content-Type: application/json
 
-/templates/*
+/templates/*.html
+  Cache-Control: no-cache
+/templates/*.png
   Cache-Control: public, max-age=3600
+/templates/*.json
+  Cache-Control: public, max-age=300
