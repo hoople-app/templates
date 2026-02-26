@@ -497,22 +497,42 @@
       }).join('');
       document.getElementById('detail-fields').innerHTML = fieldsHtml;
 
-      // Preview image — use the static preview.png screenshot
+      // Preview iframe — load controller HTML as srcdoc with a mock hoople object
+      // so the interactive UI renders immediately without a live session.
       var previewWrap = document.getElementById('preview-wrap');
       var placeholder = document.getElementById('preview-placeholder');
+      placeholder.style.display = '';
 
-      // Remove any existing preview element
       var existing = previewWrap.querySelector('img, iframe');
       if (existing) previewWrap.removeChild(existing);
 
-      if (tpl.previewUrl) {
-        var img = document.createElement('img');
-        img.src = tpl.previewUrl;
-        img.alt = 'Preview of ' + tpl.name;
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
-        img.onload = function () { placeholder.style.display = 'none'; };
-        img.onerror = function () { placeholder.textContent = 'Preview not available'; };
-        previewWrap.appendChild(img);
+      if (tpl.controllerUrl) {
+        var iframe = document.createElement('iframe');
+        iframe.setAttribute('sandbox', 'allow-scripts');
+        iframe.setAttribute('title', 'Preview of ' + tpl.name);
+        iframe.style.cssText = 'width:100%;height:100%;border:none;display:none';
+
+        fetch(tpl.controllerUrl)
+          .then(function (res) {
+            if (!res.ok) throw new Error('fetch failed');
+            return res.text();
+          })
+          .then(function (html) {
+            // Prepend a mock window.hoople that fires session-ready immediately,
+            // so the controller UI renders without a live WebSocket session.
+            var mock = '<script>' +
+              'window.hoople={_h:{},on:function(e,cb){this._h[e]=cb},send:function(){}};' +
+              'setTimeout(function(){var h=window.hoople._h["session-ready"];if(h)h({});},0);' +
+              '<\/script>';
+            iframe.srcdoc = mock + html;
+            iframe.style.display = 'block';
+            placeholder.style.display = 'none';
+          })
+          .catch(function () {
+            placeholder.textContent = 'Preview not available';
+          });
+
+        previewWrap.appendChild(iframe);
       } else {
         placeholder.textContent = 'No preview available';
       }
