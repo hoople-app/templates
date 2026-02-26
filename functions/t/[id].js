@@ -66,6 +66,9 @@ export async function onRequest(context) {
   const csp = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; " +
     "connect-src 'self' wss://hoople-relay.bjorn-slettemark.workers.dev; img-src *; frame-src 'self'";
 
+  // Safe JSON serialization — escape </script> to prevent tag injection
+  const safeJson = JSON.stringify(tpl).replace(/<\/script>/gi, '<\\/script>');
+
   const transformed = new HTMLRewriter()
     .on('head', {
       element(el) {
@@ -77,7 +80,8 @@ export async function onRequest(context) {
         el.append('<meta property="og:url" content="' + ogUrl + '">', { html: true });
         el.append('<meta property="og:type" content="website">', { html: true });
         el.append('<meta name="twitter:card" content="summary_large_image">', { html: true });
-        el.append('<meta name="hoople:template-id" content="' + esc(id) + '">', { html: true });
+        // Inline template data so the page opens detail view immediately — no client fetch needed
+        el.append('<script id="hoople-template-data" type="application/json">' + safeJson + '</script>', { html: true });
       }
     })
     .transform(baseHtmlRes);

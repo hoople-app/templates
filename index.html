@@ -456,10 +456,16 @@
     }
 
     // ---- Detail view ----
-    function openDetail(templateId) {
-      var tpl = allTemplates.find(function (t) { return t.id === templateId; });
+    // Accepts a template ID string (from gallery click) or a template object (from pre-loaded data)
+    function openDetail(templateIdOrObj) {
+      var tpl;
+      if (typeof templateIdOrObj === 'string') {
+        tpl = allTemplates.find(function (t) { return t.id === templateIdOrObj; });
+      } else {
+        tpl = templateIdOrObj;
+      }
       if (!tpl) return;
-      currentTemplateId = templateId;
+      currentTemplateId = tpl.id;
 
       document.getElementById('gallery-view').style.display = 'none';
       document.getElementById('detail-view').style.display = '';
@@ -550,12 +556,6 @@
       }
     }
 
-    // ---- Detect /t/{id} route via injected meta tag ----
-    function getInjectedTemplateId() {
-      var meta = document.querySelector('meta[name="hoople:template-id"]');
-      return meta ? meta.getAttribute('content') : null;
-    }
-
     // ---- Bootstrap ----
     document.addEventListener('DOMContentLoaded', function () {
       document.title = 'Hoople Template Gallery';
@@ -570,7 +570,24 @@
         applyFilter(e.target.value);
       });
 
-      // Load templates
+      // Check for pre-loaded template data injected by the Pages Function (/t/{id} routes).
+      // This opens the detail view immediately — no async fetch required for the initial render.
+      var preloadedEl = document.getElementById('hoople-template-data');
+      if (preloadedEl) {
+        try {
+          var preloaded = JSON.parse(preloadedEl.textContent);
+          // Seed allTemplates so the back button has something to show
+          allTemplates = [preloaded];
+          // Show detail view immediately with pre-loaded data
+          openDetail(preloaded);
+        } catch (e) {
+          console.error('Failed to parse pre-loaded template data:', e);
+        }
+      }
+
+      // Load the full template index in the background.
+      // On the gallery index page this populates the grid.
+      // On /t/{id} pages this fills in allTemplates for the back button.
       fetch('/index.json')
         .then(function (res) {
           if (!res.ok) throw new Error('Failed to load index');
@@ -578,26 +595,23 @@
         })
         .then(function (data) {
           allTemplates = data.templates || [];
-          applyFilter('');
-
-          // Auto-select if loaded as a /t/{id} route
-          var injectedId = getInjectedTemplateId();
-          if (injectedId) {
-            openDetail(injectedId);
+          // Only render the gallery grid if we are not showing a detail view
+          if (!currentTemplateId) {
+            applyFilter('');
           }
         })
         .catch(function (err) {
           console.error('Failed to load template gallery:', err);
-          document.getElementById('results-count').textContent = 'Failed to load templates.';
+          if (!currentTemplateId) {
+            document.getElementById('results-count').textContent = 'Failed to load templates.';
+          }
         });
 
       // Handle browser back/forward
       window.addEventListener('popstate', function () {
-        var injectedId = getInjectedTemplateId();
-        if (injectedId) {
-          openDetail(injectedId);
-        } else {
+        if (window.location.pathname === '/' || window.location.pathname === '/index.html') {
           showGallery();
+          applyFilter(document.getElementById('search').value);
         }
       });
     });
