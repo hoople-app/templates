@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- title injected by Pages Function for /t/ routes -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Browse free interactive presentation templates for Hoople — polls, voting, heatmaps, and more.">
+  <meta property="og:title" content="Hoople Template Gallery">
+  <meta property="og:description" content="Browse free interactive presentation templates for Hoople.">
+  <meta property="og:type" content="website">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f6fa;
+      color: #1a1a2e;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e8eaf0;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .header-brand {
+      flex: 1;
+    }
+
+    .header-brand h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #4f46e5;
+      letter-spacing: -0.5px;
+    }
+
+    .header-brand p {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    .search-wrap {
+      flex: 0 0 auto;
+    }
+
+    #search {
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      width: 260px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    #search:focus { border-color: #4f46e5; }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px;
+    }
+
+    #gallery-view {}
+
+    #detail-view { display: none; }
+
+    .results-count {
+      font-size: 0.85rem;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e8eaf0;
+      border-radius: 12px;
+      padding: 20px;
+      cursor: pointer;
+      transition: box-shadow 0.15s, transform 0.15s;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 16px rgba(79,70,229,0.12);
+      transform: translateY(-2px);
+    }
+
+    .card-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+    }
+
+    .card-author {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      margin-bottom: 8px;
+    }
+
+    .card-description {
+      font-size: 0.875rem;
+      color: #4b5563;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .tag {
+      background: #ede9fe;
+      color: #5b21b6;
+      border-radius: 99px;
+      padding: 2px 10px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .tag.grade {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    .tag.interaction {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .card-usage {
+      font-size: 0.78rem;
+      color: #9ca3af;
+    }
+
+    /* Detail view */
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      padding: 7px 14px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      color: #374151;
+      margin-bottom: 24px;
+      transition: background 0.15s;
+    }
+
+    .back-btn:hover { background: #f3f4f6; }
+
+    .detail-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 28px;
+      align-items: start;
+    }
+
+    @media (max-width: 760px) {
+      .detail-layout { grid-template-columns: 1fr; }
+    }
+
+    .preview-wrap {
+      border: 1px solid #e8eaf0;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #fff;
+      aspect-ratio: 16/9;
+    }
+
+    .preview-wrap iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .preview-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #9ca3af;
+      font-size: 0.875rem;
+    }
+
+    .detail-meta {
+      background: #fff;
+      border: 1px solid #e8eaf0;
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .detail-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 6px;
+    }
+
+    .detail-author {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 14px;
+    }
+
+    .detail-description {
+      font-size: 0.9rem;
+      color: #4b5563;
+      line-height: 1.6;
+      margin-bottom: 18px;
+    }
+
+    .detail-fields {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .detail-field {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+    }
+
+    .detail-field .label { color: #6b7280; }
+    .detail-field .value { font-weight: 500; color: #1a1a2e; }
+
+    .open-btn {
+      display: block;
+      width: 100%;
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px 20px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s;
+    }
+
+    .open-btn:hover { background: #4338ca; }
+
+    .open-hint {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #9ca3af;
+    }
+
+    .empty-state p { font-size: 1rem; }
+
+    footer {
+      text-align: center;
+      padding: 32px;
+      font-size: 0.8rem;
+      color: #9ca3af;
+      border-top: 1px solid #e8eaf0;
+      margin-top: 40px;
+    }
+
+    footer a { color: #4f46e5; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-brand">
+      <h1>Hoople Template Gallery</h1>
+      <p>Free interactive presentation templates — polls, voting, heatmaps, and more</p>
+    </div>
+    <div class="search-wrap">
+      <input type="search" id="search" placeholder="Search templates..." aria-label="Search templates">
+    </div>
+  </header>
+
+  <main>
+    <!-- Gallery index view -->
+    <div id="gallery-view">
+      <p class="results-count" id="results-count" aria-live="polite"></p>
+      <div class="grid" id="grid" role="list" aria-label="Template gallery"></div>
+      <div class="empty-state" id="empty-state" style="display:none">
+        <p>No templates match your search.</p>
+      </div>
+    </div>
+
+    <!-- Template detail view -->
+    <div id="detail-view" aria-live="polite">
+      <button class="back-btn" id="back-btn" aria-label="Back to gallery">
+        &#8592; Back to Gallery
+      </button>
+      <div class="detail-layout">
+        <div>
+          <div class="preview-wrap" id="preview-wrap">
+            <div class="preview-placeholder" id="preview-placeholder">Loading preview...</div>
+          </div>
+        </div>
+        <div class="detail-meta">
+          <div class="detail-name" id="detail-name"></div>
+          <div class="detail-author" id="detail-author"></div>
+          <div class="detail-description" id="detail-description"></div>
+          <div class="detail-fields" id="detail-fields"></div>
+          <button class="open-btn" id="open-btn">Open in Hoople</button>
+          <p class="open-hint">Opens the Hoople app. Free to download if not installed.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      <a href="https://hoople.app" target="_blank" rel="noopener">Hoople</a> &mdash;
+      AI-powered interactive presentations
+    </p>
+  </footer>
+
+  <noscript>
+    <style>body { display: flex; align-items: center; justify-content: center; height: 100vh; }</style>
+    <p style="font-size:1.1rem;color:#6b7280;text-align:center;padding:40px">
+      JavaScript is required to browse the Hoople Template Gallery.<br>
+      Please enable JavaScript in your browser.
+    </p>
+  </noscript>
+
+  <script>
+    'use strict';
+
+    let allTemplates = [];
+    let currentTemplateId = null;
+
+    // ---- Deep link handler ----
+    function openInHoople(templateId) {
+      let appOpened = false;
+
+      function onVisibilityChange() {
+        if (document.hidden) {
+          appOpened = true;
+          clearTimeout(fallbackTimer);
+          document.removeEventListener('visibilitychange', onVisibilityChange);
+        }
+      }
+
+      document.addEventListener('visibilitychange', onVisibilityChange);
+
+      window.location.href = 'hoople://open-template?id=' + encodeURIComponent(templateId);
+
+      var fallbackTimer = setTimeout(function () {
+        document.removeEventListener('visibilitychange', onVisibilityChange);
+        if (!appOpened) {
+          window.location.href = 'https://relay.hoople.app/download?template=' + encodeURIComponent(templateId);
+        }
+      }, 2000);
+    }
+
+    // ---- Escape HTML for safe injection ----
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // ---- Gallery rendering ----
+    function renderCard(tpl) {
+      var subjectTags = (tpl.subject || [])
+        .map(function (s) { return '<span class="tag">' + escHtml(s) + '</span>'; })
+        .join('');
+      var gradeTags = tpl.gradeLevel
+        ? '<span class="tag grade">' + escHtml(tpl.gradeLevel) + '</span>'
+        : '';
+      var interactionTag = tpl.interactionType
+        ? '<span class="tag interaction">' + escHtml(tpl.interactionType) + '</span>'
+        : '';
+      var usageText = tpl.usageCount > 0
+        ? tpl.usageCount.toLocaleString() + ' uses'
+        : 'New';
+
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.setAttribute('role', 'listitem');
+      card.setAttribute('tabindex', '0');
+      card.setAttribute('aria-label', escHtml(tpl.name));
+      card.innerHTML =
+        '<div class="card-name">' + escHtml(tpl.name) + '</div>' +
+        '<div class="card-author">by ' + escHtml(tpl.author || 'Hoople Team') + '</div>' +
+        '<div class="card-description">' + escHtml(tpl.description) + '</div>' +
+        '<div class="tags">' + subjectTags + gradeTags + interactionTag + '</div>' +
+        '<div class="card-usage">' + escHtml(usageText) + '</div>';
+
+      card.addEventListener('click', function () { openDetail(tpl.id); });
+      card.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetail(tpl.id); }
+      });
+      return card;
+    }
+
+    function applyFilter(query) {
+      var q = (query || '').toLowerCase().trim();
+      var filtered = allTemplates.filter(function (t) {
+        if (!q) return true;
+        var haystack = [
+          t.name,
+          t.description,
+          t.author,
+          t.gradeLevel,
+          t.interactionType
+        ].concat(t.subject || []).join(' ').toLowerCase();
+        return haystack.indexOf(q) !== -1;
+      });
+
+      var grid = document.getElementById('grid');
+      var empty = document.getElementById('empty-state');
+      var count = document.getElementById('results-count');
+
+      grid.innerHTML = '';
+      filtered.forEach(function (tpl) {
+        grid.appendChild(renderCard(tpl));
+      });
+
+      var total = allTemplates.length;
+      if (q) {
+        count.textContent = filtered.length + ' of ' + total + ' templates';
+      } else {
+        count.textContent = total + ' template' + (total !== 1 ? 's' : '');
+      }
+
+      empty.style.display = filtered.length === 0 ? '' : 'none';
+      grid.style.display = filtered.length === 0 ? 'none' : '';
+    }
+
+    // ---- Detail view ----
+    function openDetail(templateId) {
+      var tpl = allTemplates.find(function (t) { return t.id === templateId; });
+      if (!tpl) return;
+      currentTemplateId = templateId;
+
+      document.getElementById('gallery-view').style.display = 'none';
+      document.getElementById('detail-view').style.display = '';
+
+      document.getElementById('detail-name').textContent = tpl.name;
+      document.getElementById('detail-author').textContent = 'by ' + (tpl.author || 'Hoople Team');
+      document.getElementById('detail-description').textContent = tpl.description;
+
+      // Fields
+      var fields = [];
+      if (tpl.gradeLevel) {
+        fields.push({ label: 'Grade Level', value: tpl.gradeLevel });
+      }
+      if (tpl.interactionType) {
+        fields.push({ label: 'Interaction Type', value: tpl.interactionType });
+      }
+      if (tpl.subject && tpl.subject.length > 0) {
+        fields.push({ label: 'Subjects', value: tpl.subject.join(', ') });
+      }
+      if (tpl.usageCount > 0) {
+        fields.push({ label: 'Uses', value: tpl.usageCount.toLocaleString() });
+      }
+
+      var fieldsHtml = fields.map(function (f) {
+        return '<div class="detail-field">' +
+          '<span class="label">' + escHtml(f.label) + '</span>' +
+          '<span class="value">' + escHtml(f.value) + '</span>' +
+          '</div>';
+      }).join('');
+      document.getElementById('detail-fields').innerHTML = fieldsHtml;
+
+      // Preview iframe — sandboxed srcdoc preview
+      var previewWrap = document.getElementById('preview-wrap');
+      var placeholder = document.getElementById('preview-placeholder');
+      placeholder.style.display = '';
+
+      // Remove any existing iframe
+      var existing = previewWrap.querySelector('iframe');
+      if (existing) previewWrap.removeChild(existing);
+
+      if (tpl.controllerUrl) {
+        var iframe = document.createElement('iframe');
+        // sandbox=allow-scripts only — NEVER allow-same-origin (srcdoc + allow-same-origin = sandbox escape)
+        iframe.setAttribute('sandbox', 'allow-scripts');
+        iframe.setAttribute('title', 'Preview of ' + tpl.name);
+        iframe.setAttribute('loading', 'lazy');
+        iframe.style.cssText = 'width:100%;height:100%;border:none;display:none';
+
+        // Load the controller HTML into srcdoc for a fully sandboxed preview
+        fetch(tpl.controllerUrl)
+          .then(function (res) {
+            if (!res.ok) throw new Error('fetch failed');
+            return res.text();
+          })
+          .then(function (html) {
+            iframe.srcdoc = html;
+            iframe.style.display = 'block';
+            placeholder.style.display = 'none';
+          })
+          .catch(function () {
+            placeholder.textContent = 'Preview not available';
+          });
+
+        previewWrap.appendChild(iframe);
+      } else {
+        placeholder.textContent = 'No preview available';
+      }
+
+      // Open in Hoople button
+      document.getElementById('open-btn').onclick = function () {
+        openInHoople(tpl.id);
+      };
+
+      window.scrollTo(0, 0);
+
+      // Update URL for shareability (replaceState to avoid polluting history)
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({}, '', '/t/' + encodeURIComponent(tpl.id));
+      }
+    }
+
+    function showGallery() {
+      currentTemplateId = null;
+      document.getElementById('gallery-view').style.display = '';
+      document.getElementById('detail-view').style.display = 'none';
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState({}, '', '/');
+      }
+    }
+
+    // ---- Detect /t/{id} route via injected meta tag ----
+    function getInjectedTemplateId() {
+      var meta = document.querySelector('meta[name="hoople:template-id"]');
+      return meta ? meta.getAttribute('content') : null;
+    }
+
+    // ---- Bootstrap ----
+    document.addEventListener('DOMContentLoaded', function () {
+      document.title = 'Hoople Template Gallery';
+
+      // Wire up back button
+      document.getElementById('back-btn').addEventListener('click', function () {
+        showGallery();
+      });
+
+      // Wire up search
+      document.getElementById('search').addEventListener('input', function (e) {
+        applyFilter(e.target.value);
+      });
+
+      // Load templates
+      fetch('/index.json')
+        .then(function (res) {
+          if (!res.ok) throw new Error('Failed to load index');
+          return res.json();
+        })
+        .then(function (data) {
+          allTemplates = data.templates || [];
+          applyFilter('');
+
+          // Auto-select if loaded as a /t/{id} route
+          var injectedId = getInjectedTemplateId();
+          if (injectedId) {
+            openDetail(injectedId);
+          }
+        })
+        .catch(function (err) {
+          console.error('Failed to load template gallery:', err);
+          document.getElementById('results-count').textContent = 'Failed to load templates.';
+        });
+
+      // Handle browser back/forward
+      window.addEventListener('popstate', function () {
+        var injectedId = getInjectedTemplateId();
+        if (injectedId) {
+          openDetail(injectedId);
+        } else {
+          showGallery();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -10,15 +10,16 @@ const templatesDir = path.join(__dirname, '..', 'templates')
 const dirs = fs.readdirSync(templatesDir, { withFileTypes: true })
   .filter(d => d.isDirectory())
 
+const BASE_URL = 'https://templates.hoople.app'
+
 const templates = dirs.map(d => {
   const manifestPath = path.join(templatesDir, d.name, 'manifest.json')
   const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'))
   return {
     ...manifest,
     id: d.name,
-    // TODO: update base URL to https://templates.hoople.app when domain is registered
-    previewUrl: `https://hoople-templates.pages.dev/templates/${d.name}/preview.png`,
-    controllerUrl: `https://hoople-templates.pages.dev/templates/${d.name}/controller.html`,
+    previewUrl: `${BASE_URL}/templates/${d.name}/preview.png`,
+    controllerUrl: `${BASE_URL}/templates/${d.name}/controller.html`,
   }
 })
 
@@ -27,5 +28,34 @@ const index = {
   templates,
 }
 
-fs.writeFileSync(path.join(__dirname, '..', 'index.json'), JSON.stringify(index, null, 2))
+const outDir = path.join(__dirname, '..')
+
+// Write index.json
+fs.writeFileSync(path.join(outDir, 'index.json'), JSON.stringify(index, null, 2))
 console.log(`Generated index.json with ${templates.length} templates`)
+
+// Write sitemap.xml
+const sitemapEntries = [
+  `  <url>
+    <loc>${BASE_URL}/</loc>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>`
+]
+
+templates.forEach(tpl => {
+  sitemapEntries.push(`  <url>
+    <loc>${BASE_URL}/t/${tpl.id}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>`)
+})
+
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapEntries.join('\n')}
+</urlset>
+`
+
+fs.writeFileSync(path.join(outDir, 'sitemap.xml'), sitemap)
+console.log(`Generated sitemap.xml with ${templates.length + 1} URLs`)
