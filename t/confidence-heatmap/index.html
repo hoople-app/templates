@@ -506,39 +506,22 @@
       }).join('');
       document.getElementById('detail-fields').innerHTML = fieldsHtml;
 
-      // Preview iframe — sandboxed srcdoc preview
+      // Preview image — use the static preview.png screenshot
       var previewWrap = document.getElementById('preview-wrap');
       var placeholder = document.getElementById('preview-placeholder');
-      placeholder.style.display = '';
 
-      // Remove any existing iframe
-      var existing = previewWrap.querySelector('iframe');
+      // Remove any existing preview element
+      var existing = previewWrap.querySelector('img, iframe');
       if (existing) previewWrap.removeChild(existing);
 
-      if (tpl.controllerUrl) {
-        var iframe = document.createElement('iframe');
-        // sandbox=allow-scripts only — NEVER allow-same-origin (srcdoc + allow-same-origin = sandbox escape)
-        iframe.setAttribute('sandbox', 'allow-scripts');
-        iframe.setAttribute('title', 'Preview of ' + tpl.name);
-        iframe.setAttribute('loading', 'lazy');
-        iframe.style.cssText = 'width:100%;height:100%;border:none;display:none';
-
-        // Load the controller HTML into srcdoc for a fully sandboxed preview
-        fetch(tpl.controllerUrl)
-          .then(function (res) {
-            if (!res.ok) throw new Error('fetch failed');
-            return res.text();
-          })
-          .then(function (html) {
-            iframe.srcdoc = html;
-            iframe.style.display = 'block';
-            placeholder.style.display = 'none';
-          })
-          .catch(function () {
-            placeholder.textContent = 'Preview not available';
-          });
-
-        previewWrap.appendChild(iframe);
+      if (tpl.previewUrl) {
+        var img = document.createElement('img');
+        img.src = tpl.previewUrl;
+        img.alt = 'Preview of ' + tpl.name;
+        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+        img.onload = function () { placeholder.style.display = 'none'; };
+        img.onerror = function () { placeholder.textContent = 'Preview not available'; };
+        previewWrap.appendChild(img);
       } else {
         placeholder.textContent = 'No preview available';
       }
