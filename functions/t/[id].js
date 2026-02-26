@@ -59,12 +59,12 @@ export async function onRequest(context) {
   const name = esc(tpl.name || '');
   const description = esc(tpl.description || '');
   const pageTitle = name + ' -- Hoople Templates';
-  const ogImage = 'https://templates.hoople.app/templates/' + id + '/preview.png';
-  const ogUrl = 'https://templates.hoople.app/t/' + id;
+  const ogImage = 'https://hoople-templates.pages.dev/templates/' + id + '/preview.png';
+  const ogUrl = 'https://hoople-templates.pages.dev/t/' + id;
 
   // Use HTMLRewriter to inject SEO meta tags into <head>
   const csp = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; " +
-    "connect-src 'self' wss://relay.hoople.app; img-src *; frame-src 'self'";
+    "connect-src 'self' wss://hoople-relay.bjorn-slettemark.workers.dev; img-src *; frame-src 'self'";
 
   const transformed = new HTMLRewriter()
     .on('head', {

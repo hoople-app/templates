@@ -373,7 +373,7 @@
       var fallbackTimer = setTimeout(function () {
         document.removeEventListener('visibilitychange', onVisibilityChange);
         if (!appOpened) {
-          window.location.href = 'https://relay.hoople.app/download?template=' + encodeURIComponent(templateId);
+          window.location.href = 'https://hoople-relay.bjorn-slettemark.workers.dev/download?template=' + encodeURIComponent(templateId);
         }
       }, 2000);
     }

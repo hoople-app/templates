@@ -1,5 +1,5 @@
 /*.html
-  Content-Security-Policy: default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self' wss://relay.hoople.app; img-src *; frame-src 'self'
+  Content-Security-Policy: default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self' wss://hoople-relay.bjorn-slettemark.workers.dev; img-src *; frame-src 'self'
   X-Content-Type-Options: nosniff
 
 /index.json

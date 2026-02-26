@@ -1,5 +1,5 @@
 {
-  "generated": "2026-02-26T11:04:36.915Z",
+  "generated": "2026-02-26T13:27:33.205Z",
   "templates": [
     {
       "name": "Confidence Heatmap",
@@ -12,8 +12,8 @@
       "interactionType": "rating",
       "usageCount": 0,
       "id": "confidence-heatmap",
-      "previewUrl": "https://templates.hoople.app/templates/confidence-heatmap/preview.png",
-      "controllerUrl": "https://templates.hoople.app/templates/confidence-heatmap/controller.html"
+      "previewUrl": "https://hoople-templates.pages.dev/templates/confidence-heatmap/preview.png",
+      "controllerUrl": "https://hoople-templates.pages.dev/templates/confidence-heatmap/controller.html"
     },
     {
       "name": "Live Debate Voting",
@@ -28,8 +28,8 @@
       "interactionType": "voting",
       "usageCount": 0,
       "id": "live-debate-voting",
-      "previewUrl": "https://templates.hoople.app/templates/live-debate-voting/preview.png",
-      "controllerUrl": "https://templates.hoople.app/templates/live-debate-voting/controller.html"
+      "previewUrl": "https://hoople-templates.pages.dev/templates/live-debate-voting/preview.png",
+      "controllerUrl": "https://hoople-templates.pages.dev/templates/live-debate-voting/controller.html"
     },
     {
       "name": "Quick Poll",
@@ -42,8 +42,8 @@
       "interactionType": "poll",
       "usageCount": 0,
       "id": "quick-poll",
-      "previewUrl": "https://templates.hoople.app/templates/quick-poll/preview.png",
-      "controllerUrl": "https://templates.hoople.app/templates/quick-poll/controller.html"
+      "previewUrl": "https://hoople-templates.pages.dev/templates/quick-poll/preview.png",
+      "controllerUrl": "https://hoople-templates.pages.dev/templates/quick-poll/controller.html"
     }
   ]
 }

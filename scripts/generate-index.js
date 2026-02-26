@@ -10,7 +10,7 @@ const templatesDir = path.join(__dirname, '..', 'templates')
 const dirs = fs.readdirSync(templatesDir, { withFileTypes: true })
   .filter(d => d.isDirectory())
 
-const BASE_URL = 'https://templates.hoople.app'
+const BASE_URL = 'https://hoople-templates.pages.dev'
 
 const templates = dirs.map(d => {
   const manifestPath = path.join(templatesDir, d.name, 'manifest.json')
